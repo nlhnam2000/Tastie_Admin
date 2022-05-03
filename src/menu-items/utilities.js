@@ -1,12 +1,12 @@
 // assets
-import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
+import { IconUsers, IconToolsKitchen, IconReceipt, IconTicket } from '@tabler/icons';
 
 // constant
 const icons = {
-    IconTypography,
-    IconPalette,
-    IconShadow,
-    IconWindmill
+    IconUsers,
+    IconToolsKitchen,
+    IconReceipt,
+    IconTicket
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -18,44 +18,45 @@ const utilities = {
     children: [
         {
             id: 'util-typography',
-            title: 'Typography',
+            title: 'Users',
             type: 'item',
             url: '/utils/util-typography',
-            icon: icons.IconTypography,
+            icon: icons.IconUsers,
+            breadcrumbs: false
+        },
+
+        {
+            id: 'util-shadow',
+            title: 'Provider',
+            type: 'item',
+            url: '/utils/util-shadow',
+            icon: icons.IconToolsKitchen,
             breadcrumbs: false
         },
         {
             id: 'util-color',
-            title: 'Color',
+            title: 'Order',
             type: 'item',
             url: '/utils/util-color',
-            icon: icons.IconPalette,
-            breadcrumbs: false
-        },
-        {
-            id: 'util-shadow',
-            title: 'Shadow',
-            type: 'item',
-            url: '/utils/util-shadow',
-            icon: icons.IconShadow,
+            icon: icons.IconReceipt,
             breadcrumbs: false
         },
         {
             id: 'icons',
-            title: 'Icons',
+            title: 'Ecoupon',
             type: 'collapse',
-            icon: icons.IconWindmill,
+            icon: icons.IconTicket,
             children: [
                 {
                     id: 'tabler-icons',
-                    title: 'Tabler Icons',
+                    title: 'Ecoupon List',
                     type: 'item',
                     url: '/icons/tabler-icons',
                     breadcrumbs: false
                 },
                 {
                     id: 'material-icons',
-                    title: 'Material Icons',
+                    title: 'Add an Ecoupon',
                     type: 'item',
                     url: '/icons/material-icons',
                     breadcrumbs: false
