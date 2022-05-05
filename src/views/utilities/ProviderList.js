@@ -68,7 +68,7 @@ const ProviderList = () => {
             }
         };
 
-        GetAllProvider(1, 50);
+        GetAllProvider(1, 100000000);
     }, []);
 
     return (

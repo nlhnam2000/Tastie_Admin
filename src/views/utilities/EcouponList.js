@@ -38,7 +38,7 @@ const EcouponList = () => {
         if (month.length < 2) month = `0${month}`;
         if (day.length < 2) day = `0${day}`;
 
-        return [year, month, day].join('-');
+        return [year, month, day].join('-'); // 2022-05-04
     };
 
     const GetAllEcoupon = async (offset, limit) => {
@@ -58,7 +58,18 @@ const EcouponList = () => {
             );
 
             if (res.data.status) {
-                setRows(res.data.response);
+                const clone = [...res.data.response];
+                setRows(
+                    clone.map((item) => ({
+                        ...item,
+                        // update_at: new Date(item.update_at).toLocaleString('vi-VI'),
+                        // start_date: new Date(item.start_date).toLocaleString('vi-VI'),
+                        // expire_date: new Date(item.expire_date).toLocaleString('vi-VI')
+                        update_at: formatDate(item.update_at),
+                        start_date: formatDate(item.start_date),
+                        expire_date: formatDate(item.expire_date)
+                    }))
+                );
             }
         } catch (error) {
             console.error('Cannot get all ecoupons', error);
@@ -76,11 +87,6 @@ const EcouponList = () => {
         } finally {
             setOpenModal(false);
         }
-    };
-
-    const handleCancelUpdateRow = () => {
-        setRows((prev) => ({ ...prev }));
-        setOpenModal(false);
     };
 
     useEffect(() => {
@@ -135,14 +141,13 @@ const EcouponList = () => {
                     <DialogTitle id="alert-dialog-title">Are you sure to apply the changes ?</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps
-                            are running.
+                            This action will change the original record. Would you like to apply change ?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => setOpenModal(false)}>Disagree</Button>
+                        <Button onClick={() => setOpenModal(false)}>Cancel</Button>
                         <Button onClick={() => handleUpdateRow(formData)} autoFocus>
-                            Agree
+                            Apply
                         </Button>
                     </DialogActions>
                 </Dialog>

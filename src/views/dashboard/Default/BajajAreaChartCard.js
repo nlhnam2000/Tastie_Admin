@@ -14,7 +14,7 @@ import chartData from './chart-data/bajaj-area-chart';
 
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
-const BajajAreaChartCard = () => {
+const BajajAreaChartCard = ({ merchantName = 'Unknown', revenu = 0.0, revenueList = [{ data: 0 }] }) => {
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
     const { navType } = customization;
@@ -39,12 +39,12 @@ const BajajAreaChartCard = () => {
                     <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
                             <Typography variant="subtitle1" sx={{ color: theme.palette.secondary.dark }}>
-                                Bajaj Finery
+                                {merchantName}
                             </Typography>
                         </Grid>
                         <Grid item>
                             <Typography variant="h4" sx={{ color: theme.palette.grey[800] }}>
-                                $1839.00
+                                ${revenu}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -55,7 +55,7 @@ const BajajAreaChartCard = () => {
                     </Typography>
                 </Grid>
             </Grid>
-            <Chart {...chartData} />
+            <Chart {...chartData} series={revenueList} />
         </Card>
     );
 };

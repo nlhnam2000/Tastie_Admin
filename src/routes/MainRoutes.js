@@ -44,11 +44,11 @@ const MainRoutes = {
             element: <UtilsShadow />
         },
         {
-            path: '/icons/tabler-icons',
+            path: '/ecoupons/ecoupon-list',
             element: <UtilsTablerIcons />
         },
         {
-            path: '/icons/material-icons',
+            path: '/ecoupons/add-ecoupon',
             element: <UtilsMaterialIcons />
         },
         {

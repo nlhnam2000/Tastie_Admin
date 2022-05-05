@@ -51,14 +51,14 @@ const utilities = {
                     id: 'tabler-icons',
                     title: 'Ecoupon List',
                     type: 'item',
-                    url: '/icons/tabler-icons',
+                    url: '/ecoupons/ecoupon-list',
                     breadcrumbs: false
                 },
                 {
                     id: 'material-icons',
                     title: 'Add an Ecoupon',
                     type: 'item',
-                    url: '/icons/material-icons',
+                    url: '/ecoupons/add-ecoupon',
                     breadcrumbs: false
                 }
             ]

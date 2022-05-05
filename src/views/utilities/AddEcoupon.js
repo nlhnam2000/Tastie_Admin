@@ -45,6 +45,7 @@ const AddEcoupon = () => {
 
             if (res.data.status) {
                 alert('Success');
+                window.location.href('/ecoupons/ecoupon-list');
             }
         } catch (error) {
             console.error('Cannot add an ecoupon', error);
@@ -290,7 +291,10 @@ const AddEcoupon = () => {
                     variant="contained"
                     color="primary"
                     sx={{ margin: 'auto', marginTop: 10 }}
-                    onClick={() => handleAddEcoupon(formData)}
+                    onClick={(event) => {
+                        event.preventDefault();
+                        handleAddEcoupon(formData);
+                    }}
                 >
                     Add Ecoupon
                 </Button>
