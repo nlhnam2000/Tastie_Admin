@@ -138,8 +138,9 @@ const PopularCard = ({ isLoading }) => {
     };
 
     useEffect(() => {
-        // LoadRanking(3, 6, 2022, 20);
-        sortByMonth();
+        LoadRanking(3, 6, 2022, 20);
+        // sortByMonth();
+        // sortByYear();
         return () => {
             setRanking([]);
         };
@@ -237,7 +238,15 @@ const PopularCard = ({ isLoading }) => {
                                                 </Grid>
                                             </Grid>
                                             <Grid item>
-                                                <Typography variant="subtitle2" sx={{ color: 'success.dark' }}>
+                                                <Typography
+                                                    variant="subtitle2"
+                                                    sx={{
+                                                        color:
+                                                            differences[index]?.state === 'Profit'
+                                                                ? 'success.dark'
+                                                                : theme.palette.orange.dark
+                                                    }}
+                                                >
                                                     ${differences[index]?.difference} {differences[index]?.state}
                                                 </Typography>
                                             </Grid>

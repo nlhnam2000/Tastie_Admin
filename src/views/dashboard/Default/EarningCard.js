@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -17,6 +17,9 @@ import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
 import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
+
+// libraries
+import axios from 'axios';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.dark,
@@ -60,6 +63,7 @@ const EarningCard = ({ isLoading }) => {
     const theme = useTheme();
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [totalRevenue, setTotalRevenue] = useState(0);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -68,6 +72,25 @@ const EarningCard = ({ isLoading }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const GetTotalRevenue = async (startMonth, endMonth, year) => {
+        try {
+            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
+                start_month: startMonth,
+                end_month: endMonth,
+                year
+            });
+            if (res.data.status && res.data.response.length > 0) {
+                setTotalRevenue(res.data.response[0].total_revenue);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        GetTotalRevenue(3, 6, 2022);
+    }, []);
 
     return (
         <>
@@ -144,7 +167,7 @@ const EarningCard = ({ isLoading }) => {
                                 <Grid container alignItems="center">
                                     <Grid item>
                                         <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                            $500.00
+                                            ${totalRevenue.toFixed(2)}
                                         </Typography>
                                     </Grid>
                                     <Grid item>
@@ -169,7 +192,7 @@ const EarningCard = ({ isLoading }) => {
                                         color: theme.palette.secondary[200]
                                     }}
                                 >
-                                    Total Earning
+                                    Total Revenue
                                 </Typography>
                             </Grid>
                         </Grid>

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -18,6 +18,9 @@ import ChartDataYear from './chart-data/total-order-year-line-chart';
 // assets
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+
+// libraries
+import axios from 'axios';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.primary.dark,
@@ -67,9 +70,30 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
     const theme = useTheme();
 
     const [timeValue, setTimeValue] = useState(false);
+    const [totalSale, setTotalSale] = useState(0);
     const handleChangeTime = (event, newValue) => {
         setTimeValue(newValue);
     };
+
+    const GetTotalSale = async (startMonth, endMonth, year) => {
+        try {
+            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-number-order-by-time', {
+                start_month: startMonth,
+                end_month: endMonth,
+                year
+            });
+
+            if (res.data.status && res.data.response.length > 0) {
+                setTotalSale(res.data.response[0].total_num_orders);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        GetTotalSale(3, 6, 2022);
+    }, []);
 
     return (
         <>
@@ -128,7 +152,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                                                     </Typography>
                                                 ) : (
                                                     <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                                        $961
+                                                        ${totalSale.toFixed(2)}
                                                     </Typography>
                                                 )}
                                             </Grid>
@@ -152,7 +176,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                                                         color: theme.palette.primary[200]
                                                     }}
                                                 >
-                                                    Total Order
+                                                    Total Sales
                                                 </Typography>
                                             </Grid>
                                         </Grid>
