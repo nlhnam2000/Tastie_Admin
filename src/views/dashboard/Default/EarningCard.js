@@ -3,16 +3,18 @@ import { useState, useEffect } from 'react';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
-import { Avatar, Box, Grid, Menu, MenuItem, Typography } from '@mui/material';
+import { Avatar, Box, Grid, Menu, MenuItem, Typography, Button } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
+import { SHOW_CURRENT_CHART } from 'store/actions';
 
 // assets
 import EarningIcon from 'assets/images/icons/earning.svg';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
 import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
@@ -20,6 +22,7 @@ import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 
 // libraries
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.dark,
@@ -54,16 +57,20 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
             top: -155,
             right: -70
         }
-    }
+    },
+    cursor: 'pointer'
 }));
 
 // ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
 
 const EarningCard = ({ isLoading }) => {
     const theme = useTheme();
+    const dispatch = useDispatch();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [totalRevenue, setTotalRevenue] = useState(0);
+    const [timeValue, setTimeValue] = useState('Month');
+    const [isHigher, setIsHigher] = useState(true);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -73,31 +80,61 @@ const EarningCard = ({ isLoading }) => {
         setAnchorEl(null);
     };
 
+    const handleChangeTime = (event, newTimeValue) => {
+        event.stopPropagation();
+        setTimeValue(newTimeValue);
+    };
+
     const GetTotalRevenue = async (startMonth, endMonth, year) => {
-        try {
-            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
-                start_month: startMonth,
-                end_month: endMonth,
-                year
-            });
-            if (res.data.status && res.data.response.length > 0) {
-                setTotalRevenue(res.data.response[0].total_revenue);
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        // try {
+        //     const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
+        //         start_month: startMonth,
+        //         end_month: endMonth,
+        //         year
+        //     });
+        //     if (res.data.status && res.data.response.length > 0) {
+        //         setTotalRevenue(res.data.response[0].total_revenue);
+        //     }
+        // } catch (error) {
+        //     console.error(error);
+        // }
+        const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
+            start_month: startMonth,
+            end_month: endMonth,
+            year
+        });
+
+        return res.data.response[0];
     };
 
     useEffect(() => {
-        GetTotalRevenue(3, 6, 2022);
-    }, []);
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+
+        if (timeValue === 'Month') {
+            // GetTotalRevenue(currentMonth, currentMonth, currentYear);
+            const getPreviousMonth = GetTotalRevenue(currentMonth - 1, currentMonth - 1, currentYear);
+            const getCurrentMonth = GetTotalRevenue(currentMonth, currentMonth, currentYear);
+            Promise.all([getPreviousMonth, getCurrentMonth]).then((values) => {
+                setTotalRevenue(values[1].total_revenue);
+                setIsHigher(values[0] < values[1]);
+            });
+        } else {
+            const getPreviousMonth = GetTotalRevenue(1, 12, currentYear);
+            const getCurrentMonth = GetTotalRevenue(1, 12, currentYear - 1);
+            Promise.all([getPreviousMonth, getCurrentMonth]).then((values) => {
+                setTotalRevenue(values[1].total_revenue);
+                setIsHigher(values[0] < values[1]);
+            });
+        }
+    }, [timeValue]);
 
     return (
         <>
             {isLoading ? (
                 <SkeletonEarningCard />
             ) : (
-                <CardWrapper border={false} content={false}>
+                <CardWrapper border={false} content={false} onClick={() => dispatch({ type: SHOW_CURRENT_CHART, currentChart: 1 })}>
                     <Box sx={{ p: 2.25 }}>
                         <Grid container direction="column">
                             <Grid item>
@@ -115,7 +152,7 @@ const EarningCard = ({ isLoading }) => {
                                             <img src={EarningIcon} alt="Notification" />
                                         </Avatar>
                                     </Grid>
-                                    <Grid item>
+                                    {/* <Grid item>
                                         <Avatar
                                             variant="rounded"
                                             sx={{
@@ -148,18 +185,32 @@ const EarningCard = ({ isLoading }) => {
                                             }}
                                         >
                                             <MenuItem onClick={handleClose}>
-                                                <GetAppTwoToneIcon sx={{ mr: 1.75 }} /> Import Card
+                                                <Typography>This Month</Typography>
                                             </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <FileCopyTwoToneIcon sx={{ mr: 1.75 }} /> Copy Data
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <PictureAsPdfTwoToneIcon sx={{ mr: 1.75 }} /> Export
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <ArchiveTwoToneIcon sx={{ mr: 1.75 }} /> Archive File
+                                            <MenuItem>
+                                                <Typography>This year</Typography>
                                             </MenuItem>
                                         </Menu>
+                                    </Grid> */}
+                                    <Grid item>
+                                        <Button
+                                            disableElevation
+                                            variant={timeValue === 'Month' ? 'contained' : 'text'}
+                                            size="small"
+                                            sx={{ color: 'inherit', zIndex: 1 }}
+                                            onClick={(e) => handleChangeTime(e, 'Month')}
+                                        >
+                                            Month
+                                        </Button>
+                                        <Button
+                                            disableElevation
+                                            variant={timeValue === 'Year' ? 'contained' : 'text'}
+                                            size="small"
+                                            sx={{ color: 'inherit', zIndex: 1 }}
+                                            onClick={(e) => handleChangeTime(e, 'Year')}
+                                        >
+                                            Year
+                                        </Button>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -179,7 +230,11 @@ const EarningCard = ({ isLoading }) => {
                                                 color: theme.palette.secondary.dark
                                             }}
                                         >
-                                            <ArrowUpwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
+                                            {isHigher ? (
+                                                <ArrowUpwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
+                                            ) : (
+                                                <ArrowDownwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
+                                            )}
                                         </Avatar>
                                     </Grid>
                                 </Grid>

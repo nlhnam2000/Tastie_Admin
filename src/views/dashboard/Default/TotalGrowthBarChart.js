@@ -18,6 +18,9 @@ import { gridSpacing } from 'store/constant';
 // chart data
 import chartData from './chart-data/total-growth-bar-chart';
 
+// libraries
+import axios from 'axios';
+
 const status = [
     {
         value: 'today',
@@ -35,10 +38,11 @@ const status = [
 
 // ==============================|| DASHBOARD DEFAULT - TOTAL GROWTH BAR CHART ||============================== //
 
-const TotalGrowthBarChart = ({ isLoading }) => {
+const TotalGrowthBarChart = ({ isLoading, type }) => {
     const [value, setValue] = useState('today');
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
+    const [data, setData] = useState([]);
 
     const { navType } = customization;
     const { primary } = theme.palette.text;
@@ -51,6 +55,38 @@ const TotalGrowthBarChart = ({ isLoading }) => {
     const secondaryMain = theme.palette.secondary.main;
     const secondaryLight = theme.palette.secondary.light;
 
+    const toMonths = (data) => {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        return data.map((item) => months[item - 1]);
+    };
+
+    const getSum = (data, type) => {
+        let sum = 0.0;
+        data.forEach((d) => {
+            sum += type === 1 ? d.totalRevenue : d.numberOrder;
+        });
+
+        return sum;
+    };
+
+    const LoadData = async () => {
+        try {
+            const res = await axios.get('http://localhost:3010/v1/api/tastie/admin/statics-of-total-revenue-in-the-last-12-month');
+            if (res.data.status && res.data.response.length > 0) {
+                setData(res.data.response.reverse());
+            }
+        } catch (error) {
+            console.error('Cannot get data of last 12 months');
+        } finally {
+            console.log(customization);
+        }
+    };
+
+    useEffect(() => {
+        LoadData();
+    }, []);
+
     useEffect(() => {
         const newChartData = {
             ...chartData.options,
@@ -60,7 +96,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                     style: {
                         colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary]
                     }
-                }
+                },
+                categories: toMonths([...data].map((item) => item.month))
             },
             yaxis: {
                 labels: {
@@ -79,14 +116,20 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                 labels: {
                     colors: grey500
                 }
-            }
+            },
+            series: [
+                {
+                    name: type === 1 ? 'Total revenue' : 'Total sale',
+                    data: [...data].map((item) => (type === 1 ? parseFloat(item.totalRevenue).toFixed(2) : item.numberOrder))
+                }
+            ]
         };
 
         // do not load chart when loading
         if (!isLoading) {
             ApexCharts.exec(`bar-chart`, 'updateOptions', newChartData);
         }
-    }, [navType, primary200, primaryDark, secondaryMain, secondaryLight, primary, darkLight, grey200, isLoading, grey500]);
+    }, [navType, primary200, primaryDark, secondaryMain, secondaryLight, primary, darkLight, grey200, isLoading, grey500, data, type]);
 
     return (
         <>
@@ -100,10 +143,14 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                                 <Grid item>
                                     <Grid container direction="column" spacing={1}>
                                         <Grid item>
-                                            <Typography variant="subtitle2">Total Growth</Typography>
+                                            <Typography variant="subtitle1">
+                                                {type === 1 ? 'Total revenu chart' : 'Total sale chart'}
+                                            </Typography>
                                         </Grid>
                                         <Grid item>
-                                            <Typography variant="h3">$2,324.00</Typography>
+                                            <Typography variant="h3">
+                                                {type === 1 ? `$${getSum(data, 1)}` : `${getSum(data, 2)} orders`}
+                                            </Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>

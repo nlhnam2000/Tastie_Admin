@@ -8,7 +8,8 @@ export const initialState = {
     isOpen: [], // for active default menu
     fontFamily: config.fontFamily,
     borderRadius: config.borderRadius,
-    opened: true
+    opened: true,
+    currentChart: 1 // 1: total revenue, 2: total sale
 };
 
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
@@ -37,6 +38,13 @@ const customizationReducer = (state = initialState, action) => {
                 ...state,
                 borderRadius: action.borderRadius
             };
+        case actionTypes.SHOW_CURRENT_CHART: {
+            console.log(action.currentChart);
+            return {
+                ...state,
+                currentChart: action.currentChart
+            };
+        }
         default:
             return state;
     }
