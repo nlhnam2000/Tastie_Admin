@@ -64,10 +64,16 @@ const TotalGrowthBarChart = ({ isLoading, type }) => {
     const getSum = (data, type) => {
         let sum = 0.0;
         data.forEach((d) => {
-            sum += type === 1 ? d.totalRevenue : d.numberOrder;
+            if (type === 1) {
+                sum += d.totalRevenue;
+            } else if (type === 2) {
+                sum += d.numberOrder;
+            } else if (type === 3) {
+                sum += d.totalRevenue / d.numberOrder;
+            }
         });
 
-        return sum;
+        return parseFloat(sum).toFixed(2);
     };
 
     const LoadData = async () => {
@@ -116,14 +122,45 @@ const TotalGrowthBarChart = ({ isLoading, type }) => {
                 labels: {
                     colors: grey500
                 }
-            },
-            series: [
-                {
-                    name: type === 1 ? 'Total revenue' : 'Total sale',
-                    data: [...data].map((item) => (type === 1 ? parseFloat(item.totalRevenue).toFixed(2) : item.numberOrder))
-                }
-            ]
+            }
+            // series: [
+            //     {
+            //         name: type === 1 ? 'Total revenue' : type === 2 ? 'Total sale' : 'Total sale',
+            //         data: [...data].map((item) => {
+            //             if (type === 1) {
+            //                 return parseFloat(item.totalRevenue).toFixed(2);
+            //             } else if (type === 2) {
+            //                 return item.numberOrder;
+            //             } else if (type === 3) {
+            //                 return item.totalRevenue / item.numberOrder;
+            //             }
+            //         })
+            //     }
+            // ]
         };
+
+        if (type === 1) {
+            newChartData.series = [
+                {
+                    name: 'Total revenue',
+                    data: [...data].map((item) => parseFloat(item.totalRevenue).toFixed(2))
+                }
+            ];
+        } else if (type === 2) {
+            newChartData.series = [
+                {
+                    name: 'Total sale',
+                    data: [...data].map((item) => item.numberOrder)
+                }
+            ];
+        } else if (type === 3) {
+            newChartData.series = [
+                {
+                    name: 'Total sale',
+                    data: [...data].map((item) => parseFloat(item.totalRevenue / item.numberOrder).toFixed(2))
+                }
+            ];
+        }
 
         // do not load chart when loading
         if (!isLoading) {
@@ -143,14 +180,45 @@ const TotalGrowthBarChart = ({ isLoading, type }) => {
                                 <Grid item>
                                     <Grid container direction="column" spacing={1}>
                                         <Grid item>
-                                            <Typography variant="subtitle1">
-                                                {type === 1 ? 'Total revenu chart' : 'Total sale chart'}
-                                            </Typography>
+                                            {(() => {
+                                                switch (type) {
+                                                    case 1:
+                                                        return <Typography variant="subtitle1">Total revenue</Typography>;
+                                                    /* falls through */
+
+                                                    case 2:
+                                                        return <Typography variant="subtitle1">Total Sale</Typography>;
+                                                    /* falls through */
+
+                                                    case 3:
+                                                        return <Typography variant="subtitle1">Sale per order</Typography>;
+                                                    /* falls through */
+
+                                                    default:
+                                                        return <Typography variant="subtitle1">Total revenue</Typography>;
+                                                    /* falls through */
+                                                }
+                                            })()}
                                         </Grid>
                                         <Grid item>
-                                            <Typography variant="h3">
-                                                {type === 1 ? `$${getSum(data, 1)}` : `${getSum(data, 2)} orders`}
-                                            </Typography>
+                                            {(() => {
+                                                switch (type) {
+                                                    case 1:
+                                                        <Typography variant="h3">${getSum(data, 1)}</Typography>;
+                                                    /* falls through */
+                                                    case 2:
+                                                        return <Typography variant="h3">{getSum(data, 2)} orders</Typography>;
+                                                    /* falls through */
+
+                                                    case 3:
+                                                        return <Typography variant="h3">{getSum(data, 3)} sales per order</Typography>;
+                                                    /* falls through */
+
+                                                    default:
+                                                        return <Typography variant="h3">${getSum(data, 1)}</Typography>;
+                                                    /* falls through */
+                                                }
+                                            })()}
                                         </Grid>
                                     </Grid>
                                 </Grid>

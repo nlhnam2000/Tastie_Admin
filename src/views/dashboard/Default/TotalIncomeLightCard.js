@@ -21,6 +21,8 @@ import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 
 // libraries
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { SHOW_CURRENT_CHART } from 'store/actions';
 
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
@@ -77,15 +79,18 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
             top: -155,
             right: -70
         }
-    }
+    },
+    cursor: 'pointer'
 }));
 
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
 const TotalIncomeLightCard = ({ isLoading }) => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
     const [salePerOrder, setSalePerOrder] = useState(0);
+    const [isHigher, setIsHigher] = useState(true);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -139,7 +144,7 @@ const TotalIncomeLightCard = ({ isLoading }) => {
             {isLoading ? (
                 <TotalIncomeCard />
             ) : (
-                <CardWrapper border={false} content={false}>
+                <CardWrapper border={false} content={false} onClick={() => dispatch({ type: SHOW_CURRENT_CHART, currentChart: 3 })}>
                     {/* <Box sx={{ p: 2 }}>
                         <List sx={{ py: 0 }}>
                             <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
