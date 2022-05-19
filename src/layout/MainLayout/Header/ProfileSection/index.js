@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -45,6 +45,7 @@ const ProfileSection = () => {
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [sdm, setSdm] = useState(true);
     const [value, setValue] = useState('');
@@ -55,8 +56,10 @@ const ProfileSection = () => {
      * anchorRef is used on different componets and specifying one type leads to other components throwing an error
      * */
     const anchorRef = useRef(null);
-    const handleLogout = async () => {
+    const handleLogout = () => {
         console.log('Logout');
+        localStorage.removeItem('@authentication');
+        navigate('/free/pages/login/login3');
     };
 
     const handleClose = (event) => {

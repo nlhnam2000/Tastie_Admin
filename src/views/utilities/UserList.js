@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-    Grid,
-    Link,
     Button,
     Dialog,
     DialogActions,
@@ -14,28 +12,26 @@ import {
     FormControl,
     FormGroup,
     InputLabel,
-    FormHelperText,
     Input
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
-import MuiTypography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid';
 
 // project imports
-import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';
-import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
-import { gridSpacing } from 'store/constant';
 import { userColumns } from 'assets/columns/gridData';
+import { HOST_NAME } from 'config';
 
 // import library
 import axios from 'axios';
 
 // ==============================|| TYPOGRAPHY ||============================== //
 
+const LIMIT = 100;
+
 const UserList = () => {
     const theme = useTheme();
+    const [loading, setLoading] = useState(true);
     const [rows, setRows] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [openNotification, setOpenNotification] = useState(false);
@@ -49,6 +45,7 @@ const UserList = () => {
     });
     const [selectedUser, setSelectedUser] = useState([]);
     const [showRemoveButton, setShowRemoveButton] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
 
     const GetAllUser = async (offset, limit) => {
         try {
@@ -58,7 +55,7 @@ const UserList = () => {
                 }
             };
             const res = await axios.post(
-                'http://localhost:3010/v1/api/tastie/admin/get-all-user',
+                `http://${HOST_NAME}:3010/v1/api/tastie/admin/get-all-user`,
                 {
                     limit,
                     offset
@@ -71,12 +68,14 @@ const UserList = () => {
             }
         } catch (error) {
             console.error('Cannot get all user', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleAddUser = async (formData) => {
         try {
-            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/add-user', formData);
+            const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/add-user`, formData);
             if (res.data.status) {
                 setOpenDialog(false);
                 setOpenNotification(true);
@@ -89,9 +88,10 @@ const UserList = () => {
 
     const handleRemoveUser = async (userIdList) => {
         // this function get the array of user_id to be removed => remove multiple users
+
         try {
             const removeUser = async (userId) => {
-                const res = await axios.put(`http://localhost:3010/v1/api/tastie/admin/remove-user/${userId}`);
+                const res = await axios.put(`http://${HOST_NAME}:3010/v1/api/tastie/admin/remove-user/${userId}`);
 
                 return res.data;
             };
@@ -101,7 +101,7 @@ const UserList = () => {
             });
             Promise.all(queryList).then((values) => {
                 console.log('Response from removing users', values);
-                GetAllUser(1, 10000000); // reload the screen with new data
+                GetAllUser(currentPage + 1, LIMIT); // reload the screen with new data
             });
         } catch (error) {
             console.error('Cannot remove users', error);
@@ -109,12 +109,21 @@ const UserList = () => {
     };
 
     useEffect(() => {
-        GetAllUser(1, 1000000);
+        GetAllUser(1, 99);
     }, []);
 
     useEffect(() => {
         setShowRemoveButton(selectedUser.length > 0);
     }, [selectedUser]);
+
+    useEffect(() => {
+        const FetchNewUser = async () => {
+            setLoading(true);
+            await GetAllUser(currentPage + 1, LIMIT);
+        };
+
+        FetchNewUser();
+    }, [currentPage]);
 
     return (
         <MainCard
@@ -142,22 +151,29 @@ const UserList = () => {
             }
         >
             <DataGrid
-                initialState={{
-                    sorting: {
-                        sortModel: [{ field: 'user_id', sort: 'desc' }] // set descending order as default
-                    }
-                }}
+                // initialState={{
+                //     sorting: {
+                //         sortModel: [{ field: 'user_id', sort: 'asc' }] // set descending order as default
+                //     }
+                // }}
+                loading={loading}
                 rows={rows}
                 columns={userColumns}
                 checkboxSelection
                 disableSelectionOnClick
                 getRowId={(row) => row.user_id}
-                sx={{ width: '100%', height: 500 }}
-                // onPageChange={(page) => alert(page)}
+                sx={{ width: '100%', height: '70vh' }}
+                onPageChange={(page) => {
+                    setCurrentPage(page);
+                }}
                 onSelectionModelChange={(userIdList, _) => {
                     console.log(userIdList);
                     setSelectedUser(userIdList);
                 }}
+                pageSize={100}
+                paginationMode="server"
+                rowCount={30000}
+                rowsPerPageOptions={[100]}
             />
             <Dialog
                 open={openDialog}

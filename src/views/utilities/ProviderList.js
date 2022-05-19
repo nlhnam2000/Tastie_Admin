@@ -12,6 +12,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { gridSpacing } from 'store/constant';
 import { providerColumns } from 'assets/columns/gridData';
+import { HOST_NAME } from 'config';
 
 import axios from 'axios';
 
@@ -44,6 +45,7 @@ const ProviderList = () => {
     const [rows, setRows] = useState([]);
     const [showRemovedButton, setShowRemovedButton] = useState(false);
     const [selectedProvider, setSelectedProvider] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const GetAllProvider = async (offset, limit) => {
         try {
@@ -53,7 +55,7 @@ const ProviderList = () => {
                 }
             };
             const res = await axios.post(
-                'http://localhost:3010/v1/api/tastie/admin/get-all-provider',
+                `http://${HOST_NAME}:3010/v1/api/tastie/admin/get-all-provider`,
                 {
                     limit,
                     offset
@@ -66,6 +68,8 @@ const ProviderList = () => {
             }
         } catch (error) {
             console.error('Cannot get all providers', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -73,7 +77,7 @@ const ProviderList = () => {
         // this function get the array of provider_id to be removed => remove multiple providers
         try {
             const removeUser = async (providerId) => {
-                const res = await axios.put(`http://localhost:3010/v1/api/tastie/admin/remove-provider/${providerId}`);
+                const res = await axios.put(`http://${HOST_NAME}:3010/v1/api/tastie/admin/remove-provider/${providerId}`);
 
                 return res.data;
             };
@@ -98,6 +102,28 @@ const ProviderList = () => {
         setShowRemovedButton(selectedProvider.length > 0);
     }, [selectedProvider]);
 
+    const login = async () => {
+        try {
+            const res = await axios.post(
+                `http://157.230.243.92:3010/v1/api/tastie/admin/sign-in`,
+                {
+                    email: 'admin1@gmail.com',
+                    password: 'admin123'
+                },
+                {
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log(res.data);
+        } catch (error) {
+            console.error('Cannot sign in', error);
+        }
+    };
+
     return (
         <MainCard
             title="Provider List"
@@ -108,18 +134,22 @@ const ProviderList = () => {
                             Remove provider
                         </Button>
                     )}
+                    <Button onClick={() => login()} variant="contained">
+                        Login
+                    </Button>
                 </>
             }
         >
             <DataGrid
                 rows={rows}
                 columns={providerColumns}
+                loading={loading}
                 pageSize={50}
                 // rowsPerPageOptions={[40]}
                 checkboxSelection
                 disableSelectionOnClick
                 getRowId={(row) => row.provider_id}
-                sx={{ width: '100%', height: 500 }}
+                sx={{ width: '100%', height: '70vh' }}
                 onSelectionModelChange={(providerList) => {
                     setSelectedProvider(providerList);
                 }}

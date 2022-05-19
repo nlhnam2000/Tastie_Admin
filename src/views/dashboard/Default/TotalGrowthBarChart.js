@@ -14,6 +14,7 @@ import Chart from 'react-apexcharts';
 import SkeletonTotalGrowthBarChart from 'ui-component/cards/Skeleton/TotalGrowthBarChart';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
+import { HOST_NAME } from 'config';
 
 // chart data
 import chartData from './chart-data/total-growth-bar-chart';
@@ -78,7 +79,7 @@ const TotalGrowthBarChart = ({ isLoading, type }) => {
 
     const LoadData = async () => {
         try {
-            const res = await axios.get('http://localhost:3010/v1/api/tastie/admin/statics-of-total-revenue-in-the-last-12-month');
+            const res = await axios.get(`http://${HOST_NAME}:3010/v1/api/tastie/admin/statics-of-total-revenue-in-the-last-12-month`);
             if (res.data.status && res.data.response.length > 0) {
                 setData(res.data.response.reverse());
             }

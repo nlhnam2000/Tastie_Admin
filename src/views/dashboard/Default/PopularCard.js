@@ -11,6 +11,7 @@ import BajajAreaChartCard from './BajajAreaChartCard';
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
+import { HOST_NAME } from '../../../config';
 
 // assets
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
@@ -49,21 +50,21 @@ const PopularCard = ({ isLoading }) => {
             const currentYear = new Date().getFullYear();
 
             const getCurrentMonthRevenue = async () => {
-                const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-top-provider-by-revenue', {
+                const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-top-provider-by-revenue`, {
                     start_month: currentMonth,
                     end_month: currentMonth,
                     year: currentYear,
-                    limit: 20
+                    limit: 5
                 });
 
                 return res.data.response;
             };
             const getPreviousMonthRevenue = async () => {
-                const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-top-provider-by-revenue', {
+                const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-top-provider-by-revenue`, {
                     start_month: currentMonth - 1,
                     end_month: currentMonth - 1,
                     year: currentYear,
-                    limit: 20
+                    limit: 5
                 });
 
                 return res.data.response;
@@ -103,11 +104,11 @@ const PopularCard = ({ isLoading }) => {
     const sortByYear = async () => {
         try {
             const currentYear = new Date().getFullYear();
-            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-top-provider-by-revenue', {
+            const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-top-provider-by-revenue`, {
                 start_month: 1,
                 end_month: 12,
                 year: currentYear,
-                limit: 20
+                limit: 5
             });
             if (res.data.status) {
                 setRanking(res.data.response);
@@ -121,7 +122,7 @@ const PopularCard = ({ isLoading }) => {
 
     const LoadRanking = async (startMonth, endMonth, year, limit) => {
         try {
-            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-top-provider-by-revenue', {
+            const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-top-provider-by-revenue`, {
                 start_month: startMonth,
                 end_month: endMonth,
                 year,
@@ -138,7 +139,7 @@ const PopularCard = ({ isLoading }) => {
     };
 
     useEffect(() => {
-        LoadRanking(3, 6, 2022, 20);
+        LoadRanking(3, 6, 2022, 5);
         // sortByMonth();
         // sortByYear();
         return () => {

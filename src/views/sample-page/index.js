@@ -6,6 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
+import { HOST_NAME } from 'config';
 
 // libraries
 import axios from 'axios';
@@ -44,7 +45,7 @@ const rows = [
         register_at: '20/02/2022',
         update_at: null,
         delete_at: null,
-        avatar: 'https://localhost:3000/avatar.png'
+        avatar: 'https://HOST_NAME:3000/avatar.png'
     },
     {
         user_id: 2,
@@ -60,7 +61,7 @@ const rows = [
         register_at: '20/02/2022',
         update_at: null,
         delete_at: null,
-        avatar: 'https://localhost:3000/avatar.png'
+        avatar: 'https://HOST_NAME:3000/avatar.png'
     }
 ];
 
@@ -75,7 +76,7 @@ const SamplePage = () => {
                 }
             };
             const res = await axios.post(
-                'http://localhost:3010/v1/api/tastie/admin/get-all-user',
+                `http://${HOST_NAME}:3010/v1/api/tastie/admin/get-all-user`,
                 {
                     limit,
                     offset

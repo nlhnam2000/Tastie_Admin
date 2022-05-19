@@ -1,5 +1,5 @@
 // project imports
-import config from 'config';
+import { config } from 'config';
 
 // action - state management
 import * as actionTypes from './actions';
@@ -9,7 +9,12 @@ export const initialState = {
     fontFamily: config.fontFamily,
     borderRadius: config.borderRadius,
     opened: true,
-    currentChart: 1 // 1: total revenue, 2: total sale
+    currentChart: 1, // 1: total revenue, 2: total sale
+    account: {
+        name: null,
+        email: null,
+        isAuth: false
+    }
 };
 
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
@@ -43,6 +48,39 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentChart: action.currentChart
+            };
+        }
+        case actionTypes.RETRIEVE_ACCOUNT: {
+            return {
+                ...state,
+                account: {
+                    ...state.account,
+                    name: action.account.name,
+                    email: action.account.email,
+                    isAuth: action.account.isAuth
+                }
+            };
+        }
+        case actionTypes.SIGN_IN: {
+            return {
+                ...state,
+                account: {
+                    ...state.account,
+                    name: action.account.name,
+                    email: action.account.email,
+                    isAuth: action.account.isAuth
+                }
+            };
+        }
+        case actionTypes.SIGN_OUT: {
+            return {
+                ...state,
+                account: {
+                    ...state.account,
+                    name: null,
+                    email: null,
+                    isAuth: false
+                }
             };
         }
         default:

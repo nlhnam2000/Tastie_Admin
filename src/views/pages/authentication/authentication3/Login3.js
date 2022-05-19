@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -10,8 +12,11 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
 import Logo from 'ui-component/Logo';
 import AuthFooter from 'ui-component/cards/AuthFooter';
+import axios from 'axios';
 
 // assets
+import { HOST_NAME } from 'config';
+import { SIGN_IN } from 'store/actions';
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
@@ -27,9 +32,10 @@ const Login = () => {
                         <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                             <AuthCardWrapper>
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
-                                    <Grid item sx={{ mb: 3 }}>
+                                    <Grid item sx={{ mb: 2 }}>
                                         <Link to="#">
-                                            <Logo />
+                                            {/* <Logo /> */}
+                                            <Typography variant="h1">Tastie</Typography>
                                         </Link>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -65,7 +71,7 @@ const Login = () => {
                                     <Grid item xs={12}>
                                         <Divider />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    {/* <Grid item xs={12}>
                                         <Grid item container direction="column" alignItems="center" xs={12}>
                                             <Typography
                                                 component={Link}
@@ -76,7 +82,7 @@ const Login = () => {
                                                 Don&apos;t have an account?
                                             </Typography>
                                         </Grid>
-                                    </Grid>
+                                    </Grid> */}
                                 </Grid>
                             </AuthCardWrapper>
                         </Grid>

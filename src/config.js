@@ -1,4 +1,4 @@
-const config = {
+export const config = {
     // basename: only at build time to set, and Don't add '/' at end off BASENAME for breadcrumbs, also Don't put only '/' use blank('') instead,
     // like '/berry-material-react/react/default'
     basename: '/free',
@@ -7,4 +7,4 @@ const config = {
     borderRadius: 12
 };
 
-export default config;
+export const HOST_NAME = '157.230.243.92';

@@ -6,6 +6,7 @@ import { Card, FormControl, FormGroup, InputLabel, FormHelperText, Input, Button
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
+import { HOST_NAME } from 'config';
 
 // library
 import axios from 'axios';
@@ -41,7 +42,7 @@ const AddEcoupon = () => {
 
     const handleAddEcoupon = async (formData) => {
         try {
-            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/add-ecoupon', formData);
+            const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/add-ecoupon`, formData);
 
             if (res.data.status) {
                 alert('Success');

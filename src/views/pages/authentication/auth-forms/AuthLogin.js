@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -24,10 +25,13 @@ import {
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import axios from 'axios';
 
 // project imports
 import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { HOST_NAME } from 'config';
+import { SIGN_IN } from 'store/actions';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
@@ -43,6 +47,8 @@ const FirebaseLogin = ({ ...others }) => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state) => state.customization);
     const [checked, setChecked] = useState(true);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const googleHandler = async () => {
         console.error('Login');
@@ -61,7 +67,7 @@ const FirebaseLogin = ({ ...others }) => {
         <>
             <Grid container direction="column" justifyContent="center" spacing={2}>
                 <Grid item xs={12}>
-                    <AnimateButton>
+                    {/* <AnimateButton>
                         <Button
                             disableElevation
                             fullWidth
@@ -79,9 +85,9 @@ const FirebaseLogin = ({ ...others }) => {
                             </Box>
                             Sign in with Google
                         </Button>
-                    </AnimateButton>
+                    </AnimateButton> */}
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                     <Box
                         sx={{
                             alignItems: 'center',
@@ -110,7 +116,7 @@ const FirebaseLogin = ({ ...others }) => {
 
                         <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
                     </Box>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
                         <Typography variant="subtitle1">Sign in with Email address</Typography>
@@ -120,8 +126,8 @@ const FirebaseLogin = ({ ...others }) => {
 
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
-                    password: '123456',
+                    email: 'admin1@gmail.com',
+                    password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
@@ -129,18 +135,50 @@ const FirebaseLogin = ({ ...others }) => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    // try {
+                    //     if (scriptedRef.current) {
+                    //         setStatus({ success: true });
+                    //         setSubmitting(false);
+                    //     }
+                    // } catch (err) {
+                    //     console.error(err);
+                    //     if (scriptedRef.current) {
+                    //         setStatus({ success: false });
+                    //         setErrors({ submit: err.message });
+                    //         setSubmitting(false);
+                    //     }
+                    // }
                     try {
-                        if (scriptedRef.current) {
-                            setStatus({ success: true });
-                            setSubmitting(false);
+                        const config = {
+                            headers: {
+                                'Access-Control-Allow-Origin': '*',
+                                'Content-Type': 'application/json'
+                            }
+                        };
+                        const res = await axios.post(
+                            `http://${HOST_NAME}:3010/v1/api/tastie/admin/sign-in`,
+                            {
+                                email: values.email,
+                                password: values.password
+                            },
+                            config
+                        );
+
+                        if (res.data.status) {
+                            const payload = {
+                                email: 'admin1@gmail.com',
+                                name: 'Admin',
+                                isAuth: true
+                            };
+                            dispatch({
+                                type: SIGN_IN,
+                                account: { ...payload }
+                            });
+                            localStorage.setItem('@authentication', JSON.stringify(payload));
+                            navigate('/free');
                         }
-                    } catch (err) {
-                        console.error(err);
-                        if (scriptedRef.current) {
-                            setStatus({ success: false });
-                            setErrors({ submit: err.message });
-                            setSubmitting(false);
-                        }
+                    } catch (error) {
+                        console.error('Cannot sign in', error);
                     }
                 }}
             >

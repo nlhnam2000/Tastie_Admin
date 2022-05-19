@@ -9,6 +9,7 @@ import { Avatar, Box, Grid, Menu, MenuItem, Typography, Button } from '@mui/mate
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
 import { SHOW_CURRENT_CHART } from 'store/actions';
+import { HOST_NAME } from '../../../config';
 
 // assets
 import EarningIcon from 'assets/images/icons/earning.svg';
@@ -87,7 +88,7 @@ const EarningCard = ({ isLoading }) => {
 
     const GetTotalRevenue = async (startMonth, endMonth, year) => {
         // try {
-        //     const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
+        //     const res = await axios.post('http://HOST_NAME:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
         //         start_month: startMonth,
         //         end_month: endMonth,
         //         year
@@ -98,7 +99,7 @@ const EarningCard = ({ isLoading }) => {
         // } catch (error) {
         //     console.error(error);
         // }
-        const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
+        const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-total-revenue-by-time`, {
             start_month: startMonth,
             end_month: endMonth,
             year
@@ -218,7 +219,7 @@ const EarningCard = ({ isLoading }) => {
                                 <Grid container alignItems="center">
                                     <Grid item>
                                         <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                            ${totalRevenue.toFixed(2)}
+                                            ${totalRevenue.toFixed(2) ?? 0.0}
                                         </Typography>
                                     </Grid>
                                     <Grid item>

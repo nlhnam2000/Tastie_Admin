@@ -35,10 +35,10 @@ const MainRoutes = {
             path: '/utils/util-typography',
             element: <UtilsTypography />
         },
-        {
-            path: '/utils/util-color',
-            element: <UtilsColor />
-        },
+        // {
+        //     path: '/utils/util-color',
+        //     element: <UtilsColor />
+        // },
         {
             path: '/utils/util-shadow',
             element: <UtilsShadow />

@@ -8,6 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { ecouponColumns } from 'assets/columns/gridData';
+import { HOST_NAME } from 'config';
 
 // assets
 import LinkIcon from '@mui/icons-material/Link';
@@ -49,7 +50,7 @@ const EcouponList = () => {
                 }
             };
             const res = await axios.post(
-                'http://localhost:3010/v1/api/tastie/admin/get-all-ecoupon',
+                `http://${HOST_NAME}:3010/v1/api/tastie/admin/get-all-ecoupon`,
                 {
                     limit,
                     offset
@@ -78,7 +79,7 @@ const EcouponList = () => {
 
     const handleUpdateRow = async (formData) => {
         try {
-            const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/update-ecoupon', formData);
+            const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/update-ecoupon`, formData);
             if (res.data.status) {
                 await GetAllEcoupon(1, 50);
             }
@@ -110,7 +111,7 @@ const EcouponList = () => {
                 checkboxSelection
                 disableSelectionOnClick
                 getRowId={(row) => row.ecoupon_id}
-                sx={{ width: '100%', height: 500 }}
+                sx={{ width: '100%', height: '70vh' }}
                 // onPageChange={(page) => alert(page)}
                 onCellEditCommit={(event) => {
                     const rowEdited = rows.find((row) => row.ecoupon_id === event.id);

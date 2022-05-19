@@ -8,6 +8,7 @@ import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography, 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import TotalIncomeCard from 'ui-component/cards/Skeleton/TotalIncomeCard';
+import { HOST_NAME } from 'config';
 
 // assets
 import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
@@ -103,7 +104,7 @@ const TotalIncomeLightCard = ({ isLoading }) => {
     const GetSalePerOrder = async (startMonth, endMonth, year) => {
         try {
             const GetTotalRevenue = async () => {
-                const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-total-revenue-by-time', {
+                const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-total-revenue-by-time`, {
                     start_month: startMonth,
                     end_month: endMonth,
                     year
@@ -113,7 +114,7 @@ const TotalIncomeLightCard = ({ isLoading }) => {
             };
 
             const GetTotalSale = async () => {
-                const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-number-order-by-time', {
+                const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-number-order-by-time`, {
                     start_month: startMonth,
                     end_month: endMonth,
                     year

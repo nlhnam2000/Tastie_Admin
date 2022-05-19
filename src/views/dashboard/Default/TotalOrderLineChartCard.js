@@ -14,6 +14,7 @@ import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
 
 import ChartDataMonth from './chart-data/total-order-month-line-chart';
 import ChartDataYear from './chart-data/total-order-year-line-chart';
+import { HOST_NAME } from 'config';
 
 // assets
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
@@ -85,7 +86,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
 
     const GetTotalSale = async (startMonth, endMonth, year) => {
         // try {
-        //     const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-number-order-by-time', {
+        //     const res = await axios.post('http://HOST_NAME:3010/v1/api/tastie/admin/get-number-order-by-time', {
         //         start_month: startMonth,
         //         end_month: endMonth,
         //         year
@@ -97,7 +98,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
         // } catch (error) {
         //     console.error(error);
         // }
-        const res = await axios.post('http://localhost:3010/v1/api/tastie/admin/get-number-order-by-time', {
+        const res = await axios.post(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-number-order-by-time`, {
             start_month: startMonth,
             end_month: endMonth,
             year

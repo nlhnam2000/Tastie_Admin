@@ -33,14 +33,14 @@ const utilities = {
             icon: icons.IconToolsKitchen,
             breadcrumbs: false
         },
-        {
-            id: 'util-color',
-            title: 'Order',
-            type: 'item',
-            url: '/utils/util-color',
-            icon: icons.IconReceipt,
-            breadcrumbs: false
-        },
+        // {
+        //     id: 'util-color',
+        //     title: 'Order',
+        //     type: 'item',
+        //     url: '/utils/util-color',
+        //     icon: icons.IconReceipt,
+        //     breadcrumbs: false
+        // },
         {
             id: 'icons',
             title: 'Ecoupon',
