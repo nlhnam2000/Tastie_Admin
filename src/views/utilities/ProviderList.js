@@ -101,29 +101,6 @@ const ProviderList = () => {
     useEffect(() => {
         setShowRemovedButton(selectedProvider.length > 0);
     }, [selectedProvider]);
-
-    const login = async () => {
-        try {
-            const res = await axios.post(
-                `http://157.230.243.92:3010/v1/api/tastie/admin/sign-in`,
-                {
-                    email: 'admin1@gmail.com',
-                    password: 'admin123'
-                },
-                {
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-
-            console.log(res.data);
-        } catch (error) {
-            console.error('Cannot sign in', error);
-        }
-    };
-
     return (
         <MainCard
             title="Provider List"
@@ -134,9 +111,6 @@ const ProviderList = () => {
                             Remove provider
                         </Button>
                     )}
-                    <Button onClick={() => login()} variant="contained">
-                        Login
-                    </Button>
                 </>
             }
         >
