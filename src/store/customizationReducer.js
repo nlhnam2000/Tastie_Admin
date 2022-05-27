@@ -1,8 +1,9 @@
 // project imports
-import { config } from 'config';
+import { config, HOST_NAME } from 'config';
 
 // action - state management
 import * as actionTypes from './actions';
+import io from 'socket.io-client';
 
 export const initialState = {
     isOpen: [], // for active default menu
@@ -14,7 +15,8 @@ export const initialState = {
         name: null,
         email: null,
         isAuth: false
-    }
+    },
+    socket: null
 };
 
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
@@ -81,6 +83,18 @@ const customizationReducer = (state = initialState, action) => {
                     email: null,
                     isAuth: false
                 }
+            };
+        }
+        case actionTypes.CONNECT_SOCKET: {
+            return {
+                ...state,
+                socket: io(`http://${HOST_NAME}:3015`)
+            };
+        }
+        case actionTypes.DISCONNECT_SOCKET: {
+            return {
+                ...state,
+                socket: null
             };
         }
         default:

@@ -11,6 +11,7 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')))
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/UserList')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
 const UtilsShadow = Loadable(lazy(() => import('views/utilities/ProviderList')));
+const ProviderRequest = Loadable(lazy(() => import('views/utilities/ProviderRequest')));
 const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/AddEcoupon')));
 const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/EcouponList')));
 
@@ -40,8 +41,12 @@ const MainRoutes = {
         //     element: <UtilsColor />
         // },
         {
-            path: '/utils/util-shadow',
+            path: '/provider/provider-list',
             element: <UtilsShadow />
+        },
+        {
+            path: '/provider/provider-request',
+            element: <ProviderRequest />
         },
         {
             path: '/ecoupons/ecoupon-list',

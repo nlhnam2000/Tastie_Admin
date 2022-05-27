@@ -10,3 +10,7 @@ export const SHOW_CURRENT_CHART = '@customization/SHOW_CURRENT_CHART';
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_OUT = 'SIGN_OUT';
 export const RETRIEVE_ACCOUNT = 'RETRIEVE_ACCOUNT';
+
+// socket
+export const CONNECT_SOCKET = 'CONNECT_SOCKET';
+export const DISCONNECT_SOCKET = 'DISCONNECT_SOCKET';

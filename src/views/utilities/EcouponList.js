@@ -9,12 +9,14 @@ import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { ecouponColumns } from 'assets/columns/gridData';
 import { HOST_NAME } from 'config';
+import { CONNECT_SOCKET, DISCONNECT_SOCKET } from 'store/actions';
 
 // assets
 import LinkIcon from '@mui/icons-material/Link';
 
 // libraries
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 
 // styles
 const IFrameWrapper = styled('iframe')(({ theme }) => ({
@@ -41,6 +43,8 @@ const EcouponList = () => {
 
         return [year, month, day].join('-'); // 2022-05-04
     };
+
+    // const socket = io(`http://${HOST_NAME}:3015`);
 
     const GetAllEcoupon = async (offset, limit) => {
         try {
@@ -91,6 +95,7 @@ const EcouponList = () => {
     };
 
     useEffect(() => {
+        // socket.emit('admin', 'hello from admin');
         GetAllEcoupon(1, 50);
     }, []);
 
@@ -99,7 +104,14 @@ const EcouponList = () => {
     }, [formData]);
 
     return (
-        <MainCard title="Ecoupon List" secondary={<SecondaryAction icon={<LinkIcon fontSize="small" />} link="https://tablericons.com/" />}>
+        <MainCard
+            title="Ecoupon List"
+            // secondary={
+            //     <Button variant="contained" onClick={() => addCoupon()}>
+            //         SOCKET
+            //     </Button>
+            // }
+        >
             {/* <Card sx={{ overflow: 'hidden' }}>
             <IFrameWrapper title="Tabler Icons" width="100%" src="https://tablericons.com/" />
         </Card> */}
@@ -107,7 +119,6 @@ const EcouponList = () => {
                 rows={rows}
                 columns={ecouponColumns}
                 pageSize={50}
-                // rowsPerPageOptions={[40]}
                 checkboxSelection
                 disableSelectionOnClick
                 getRowId={(row) => row.ecoupon_id}

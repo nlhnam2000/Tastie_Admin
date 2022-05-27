@@ -8,3 +8,4 @@ export const config = {
 };
 
 export const HOST_NAME = '157.230.243.92';
+// export const HOST_NAME = 'localhost';

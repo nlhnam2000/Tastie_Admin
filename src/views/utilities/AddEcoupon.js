@@ -7,9 +7,11 @@ import { Card, FormControl, FormGroup, InputLabel, FormHelperText, Input, Button
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { HOST_NAME } from 'config';
+import { CONNECT_SOCKET, DISCONNECT_SOCKET } from 'store/actions';
 
 // library
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 
 // styles
 const IFrameWrapper = styled('iframe')(({ theme }) => ({
@@ -35,10 +37,20 @@ const AddEcoupon = () => {
         weekly_usage_limit_per_user: null,
         delivery_mode: null
     });
+    const dispacth = useDispatch();
+    const customization = useSelector((state) => state.customization);
 
-    // useEffect(() => {
-    //     console.log(formData);
-    // }, [formData]);
+    useEffect(() => {
+        dispacth({
+            type: CONNECT_SOCKET
+        });
+
+        return () => {
+            dispacth({
+                type: DISCONNECT_SOCKET
+            });
+        };
+    }, []);
 
     const handleAddEcoupon = async (formData) => {
         try {
@@ -46,7 +58,8 @@ const AddEcoupon = () => {
 
             if (res.data.status) {
                 alert('Success');
-                window.location.href('/ecoupons/ecoupon-list');
+                // window.location.href('/ecoupons/ecoupon-list');
+                customization.socket.emit('admin-add-ecoupon');
             }
         } catch (error) {
             console.error('Cannot add an ecoupon', error);

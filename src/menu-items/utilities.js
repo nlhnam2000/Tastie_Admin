@@ -28,10 +28,25 @@ const utilities = {
         {
             id: 'util-shadow',
             title: 'Provider',
-            type: 'item',
-            url: '/utils/util-shadow',
+            type: 'collapse',
+            // url: '/utils/util-shadow',
             icon: icons.IconToolsKitchen,
-            breadcrumbs: false
+            children: [
+                {
+                    id: 'provider-list',
+                    title: 'Provider List',
+                    type: 'item',
+                    url: '/provider/provider-list',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'provider-request',
+                    title: 'Provider Request',
+                    type: 'item',
+                    url: '/provider/provider-request',
+                    breadcrumbs: false
+                }
+            ]
         },
         // {
         //     id: 'util-color',
