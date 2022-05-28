@@ -66,3 +66,21 @@ export const ecouponColumns = [
     { field: 'update_at', headerName: 'Update at', width: 100, editable: true },
     { field: 'delete_at', headerName: 'Delete at', width: 100, editable: true }
 ];
+
+export const providerByEcouponColumns = [
+    { field: 'name', headerName: 'Name', width: 100 },
+    { field: 'provider_id', headerName: 'Provider ID', width: 100 },
+    { field: 'avatar', headerName: 'Avatar', width: 100 },
+    { field: 'estimated_cooking_time', headerName: 'Estimated_cooking_time', width: 100 },
+    { field: 'rating', headerName: 'Rating', width: 100 },
+    { field: 'isFavorite', headerName: 'Is favorite', width: 100 },
+    { field: 'currentPromotion', headerName: 'Current Promotion', width: 100 },
+    { field: 'latitude', headerName: 'Latitude', width: 100 },
+    { field: 'longitude', headerName: 'Longitude', width: 100 },
+    { field: 'price_range', headerName: 'Price range', width: 100 },
+    { field: 'profile_pic', headerName: 'Profile Picture', width: 100 },
+    { field: 'has_promo', headerName: 'Has Promo', width: 100 },
+    { field: 'customer_rating', headerName: 'Customer rating', width: 100 },
+    { field: 'distance', headerName: 'Distance', width: 100 },
+    { field: 'delivery_fee', headerName: 'Delivery fee', width: 100 }
+];

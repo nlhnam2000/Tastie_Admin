@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { styled } from '@mui/material/styles';
-import { Card, Dialog, DialogActions, DialogContentText, DialogTitle, DialogContent, Button } from '@mui/material';
+import { Card, Dialog, DialogActions, DialogContentText, DialogTitle, DialogContent, Button, Modal, Box, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
-import { ecouponColumns } from 'assets/columns/gridData';
+import { ecouponColumns, providerByEcouponColumns } from 'assets/columns/gridData';
 import { HOST_NAME } from 'config';
 import { CONNECT_SOCKET, DISCONNECT_SOCKET } from 'store/actions';
 
@@ -31,6 +31,22 @@ const EcouponList = () => {
     const [rows, setRows] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [formData, setFormData] = useState({});
+    const [providerList, setProviderList] = useState([]);
+    const [openProviderList, setOpenProviderList] = useState(false);
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '150vh',
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        height: '80vh',
+        overflowY: 'scroll'
+    };
 
     const formatDate = (date) => {
         const d = new Date(date);
@@ -42,6 +58,32 @@ const EcouponList = () => {
         if (day.length < 2) day = `0${day}`;
 
         return [year, month, day].join('-'); // 2022-05-04
+    };
+
+    const openProviderListByEcoupon = async (ecouponId) => {
+        try {
+            const res = await axios.post(`http://${HOST_NAME}:3007/v1/api/tastie/home/get-list-provider-by-ecoupon`, {
+                ecoupon_id: ecouponId,
+                longitude: '106.7002387',
+                latitude: '10.7652217',
+                limit: 100,
+                offset: 1
+            });
+            setProviderList(res.data.response);
+            setOpenProviderList(true);
+        } catch (error) {
+            console.error('Cannot get provider list', error);
+        }
+    };
+
+    useEffect(() => {
+        if (providerList.length > 0) {
+            console.log(providerList);
+        }
+    }, [providerList]);
+
+    const handleClose = () => {
+        setOpenProviderList(false);
     };
 
     // const socket = io(`http://${HOST_NAME}:3015`);
@@ -142,6 +184,10 @@ const EcouponList = () => {
                     // console.log(formData);
                     // handleUpdateRow(formData);
                 }}
+                onRowClick={(params, event, details) => {
+                    console.log(params);
+                    openProviderListByEcoupon(params.row.ecoupon_id);
+                }}
             />
             <div>
                 <Dialog
@@ -164,6 +210,25 @@ const EcouponList = () => {
                     </DialogActions>
                 </Dialog>
             </div>
+            <Modal
+                open={openProviderList}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="heading" component="h2">
+                        List of applied providers
+                    </Typography>
+                    <DataGrid
+                        columns={providerByEcouponColumns}
+                        rows={providerList}
+                        getRowId={(row) => row.provider_id}
+                        sx={{ mt: 2 }}
+                        checkboxSelection
+                    />
+                </Box>
+            </Modal>
         </MainCard>
     );
 };
