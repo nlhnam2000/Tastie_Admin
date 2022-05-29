@@ -12,10 +12,13 @@ import {
     FormControl,
     FormGroup,
     InputLabel,
-    Input
+    Input,
+    TextField,
+    Box
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { DataGrid } from '@mui/x-data-grid';
+import { AccountCircle, Search, SearchOffOutlined, SearchOffRounded } from '@mui/icons-material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -108,6 +111,20 @@ const UserList = () => {
         }
     };
 
+    const SearchUser = async (name) => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`http://${HOST_NAME}:3010/v1/api/tastie/admin/filter-user-by-keyword/${name}`);
+            if (res.data.status) {
+                setRows(res.data.response);
+            }
+        } catch (error) {
+            console.error('Cannot filter user', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         GetAllUser(1, 99);
     }, []);
@@ -129,7 +146,16 @@ const UserList = () => {
         <MainCard
             title="User list"
             secondary={
-                <>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-end', mr: 2 }}>
+                        <Search sx={{ color: 'action.active', mr: 1 }} />
+                        <TextField
+                            id="input-with-sx"
+                            label="Search"
+                            variant="standard"
+                            onChange={(event) => SearchUser(event.target.value)}
+                        />
+                    </Box>
                     {showRemoveButton && (
                         <Button
                             disableElevation
@@ -144,10 +170,16 @@ const UserList = () => {
                             Remove User
                         </Button>
                     )}
-                    <Button disableElevation variant="contained" onClick={() => setOpenDialog(true)} sx={{ color: 'white' }}>
+                    <Button
+                        disableElevation
+                        color="secondary"
+                        variant="contained"
+                        onClick={() => setOpenDialog(true)}
+                        sx={{ color: 'white' }}
+                    >
                         Add User
                     </Button>
-                </>
+                </Box>
             }
         >
             <DataGrid

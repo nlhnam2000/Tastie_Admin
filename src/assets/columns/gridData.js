@@ -17,7 +17,7 @@ export const userColumns = [
 
 export const providerColumns = [
     { field: 'provider_id', headerName: 'Provider ID', width: 100 },
-    { field: 'merchant_name', headerName: 'Merchant Name', width: 100, editable: true },
+    { field: 'merchant_name', headerName: 'Merchant Name', width: 200, editable: true },
     { field: 'address', headerName: 'Address', width: 100, editable: true },
     { field: 'road', headerName: 'Road', width: 100, editable: true },
     { field: 'ward_id', headerName: 'Ward ID', width: 100, editable: true },

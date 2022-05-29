@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // material-ui
-import { Box, Card, Grid, Button } from '@mui/material';
+import { Box, Card, Grid, Button, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { AccountCircle, Search, SearchOffOutlined, SearchOffRounded } from '@mui/icons-material';
 
 // project imports
 import SubCard from 'ui-component/cards/SubCard';
@@ -94,6 +95,20 @@ const ProviderList = () => {
         }
     };
 
+    const SearchProvider = async (name) => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`http://${HOST_NAME}:3010/v1/api/tastie/admin/filter-provider-by-keyword/${name}`);
+            if (res.data.status) {
+                setRows(res.data.response);
+            }
+        } catch (error) {
+            console.error('Cannot filter user', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         GetAllProvider(1, 100000000);
     }, []);
@@ -105,13 +120,22 @@ const ProviderList = () => {
         <MainCard
             title="Provider List"
             secondary={
-                <>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-end', mr: 2 }}>
+                        <Search sx={{ color: 'action.active', mr: 1 }} />
+                        <TextField
+                            id="input-with-sx"
+                            label="Search"
+                            variant="standard"
+                            onChange={(event) => SearchProvider(event.target.value)}
+                        />
+                    </Box>
                     {showRemovedButton && (
                         <Button variant="contained" color="error" onClick={() => handleRemoveProvider(selectedProvider)}>
                             Remove provider
                         </Button>
                     )}
-                </>
+                </Box>
             }
         >
             <DataGrid
