@@ -44,9 +44,11 @@ ShadowBox.propTypes = {
 
 const ProviderList = () => {
     const [rows, setRows] = useState([]);
+    const [numberProvider, setNumberProvider] = useState(0);
     const [showRemovedButton, setShowRemovedButton] = useState(false);
     const [selectedProvider, setSelectedProvider] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [offset, setOffset] = useState(1);
 
     const GetAllProvider = async (offset, limit) => {
         try {
@@ -65,7 +67,9 @@ const ProviderList = () => {
             );
 
             if (res.data.status) {
-                setRows(res.data.response.filter((item) => item.status !== 3));
+                setNumberProvider(res.data.response.total_provider);
+                // setRows(res.data.response.list_provider.filter((item) => item.status !== 3));
+                setRows(res.data.response.list_provider);
             }
         } catch (error) {
             console.error('Cannot get all providers', error);
@@ -110,8 +114,8 @@ const ProviderList = () => {
     };
 
     useEffect(() => {
-        GetAllProvider(1, 100000000);
-    }, []);
+        GetAllProvider(offset, 50);
+    }, [offset]);
 
     useEffect(() => {
         setShowRemovedButton(selectedProvider.length > 0);
@@ -146,11 +150,14 @@ const ProviderList = () => {
                 // rowsPerPageOptions={[40]}
                 checkboxSelection
                 disableSelectionOnClick
+                rowCount={numberProvider}
                 getRowId={(row) => row.provider_id}
                 sx={{ width: '100%', height: '70vh' }}
                 onSelectionModelChange={(providerList) => {
                     setSelectedProvider(providerList);
                 }}
+                onPageChange={(page) => setOffset(page + 1)}
+                paginationMode="server"
             />
         </MainCard>
     );

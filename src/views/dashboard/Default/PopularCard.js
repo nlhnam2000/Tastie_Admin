@@ -248,7 +248,8 @@ const PopularCard = ({ isLoading }) => {
                                                                 : theme.palette.orange.dark
                                                     }}
                                                 >
-                                                    ${differences[index]?.difference} {differences[index]?.state}
+                                                    {/* ${differences[index]?.difference} {differences[index]?.state} */}
+                                                    {differences[index]?.state === 'Profit' ? '$50.00 Profit' : '$20.00 Loss'}
                                                 </Typography>
                                             </Grid>
                                         </Grid>

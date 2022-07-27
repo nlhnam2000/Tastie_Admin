@@ -248,7 +248,7 @@ const TopSaleCard = ({ isLoading }) => {
                                                                 : theme.palette.orange.dark
                                                     }}
                                                 >
-                                                    ${differences[index]?.difference} {differences[index]?.state}
+                                                    $ {differences[index]?.difference ?? 50} {differences[index]?.state ?? 'Loss'}
                                                 </Typography>
                                             </Grid>
                                         </Grid>

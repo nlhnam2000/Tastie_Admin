@@ -36,6 +36,7 @@ const UserList = () => {
     const theme = useTheme();
     const [loading, setLoading] = useState(true);
     const [rows, setRows] = useState([]);
+    const [totalUser, setTotalUser] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
     const [openNotification, setOpenNotification] = useState(false);
     const [formData, setFormData] = useState({
@@ -67,7 +68,9 @@ const UserList = () => {
             );
 
             if (res.data.status) {
-                setRows(res.data.response.filter((item) => item.user_status !== 2));
+                setTotalUser(res.data.response.total_user);
+                // setRows(res.data.response.list_user.filter((item) => item.user_status !== 2));
+                setRows(res.data.response.list_user);
             }
         } catch (error) {
             console.error('Cannot get all user', error);
@@ -126,8 +129,8 @@ const UserList = () => {
     };
 
     useEffect(() => {
-        GetAllUser(1, 99);
-    }, []);
+        GetAllUser(currentPage, 100);
+    }, [currentPage]);
 
     useEffect(() => {
         setShowRemoveButton(selectedUser.length > 0);
@@ -204,7 +207,7 @@ const UserList = () => {
                 }}
                 pageSize={100}
                 paginationMode="server"
-                rowCount={30000}
+                rowCount={totalUser}
                 rowsPerPageOptions={[100]}
             />
             <Dialog

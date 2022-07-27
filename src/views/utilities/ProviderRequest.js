@@ -23,8 +23,9 @@ const wrapperStyle = {
     display: 'flex',
     flexBasis: '1%',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap'
+    // justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '30px'
 };
 
 const modalStyle = {
@@ -54,24 +55,17 @@ const ProviderRequest = () => {
         setOpenProviderDetail(false);
     };
 
-    const GetAllProvider = async (offset, limit) => {
+    const GetRequiredList = async () => {
         try {
             const config = {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             };
-            const res = await axios.post(
-                `http://${HOST_NAME}:3010/v1/api/tastie/admin/get-all-provider`,
-                {
-                    limit,
-                    offset
-                },
-                config
-            );
+            const res = await axios.get(`http://${HOST_NAME}:3010/v1/api/tastie/admin/get-list-required-provider`);
 
             if (res.data.status) {
-                setRows(res.data.response.filter((item) => item.status !== 3));
+                setRows(res.data.response.filter((item) => item.status === 0));
             }
         } catch (error) {
             console.error('Cannot get all providers', error);
@@ -80,16 +74,42 @@ const ProviderRequest = () => {
         }
     };
 
-    const HandleAcceptRequest = (providerList) => {
-        console.log('Accepted', providerList);
+    const HandleAcceptRequest = async (provider) => {
+        console.log('Accepted', provider);
+        try {
+            const res = await axios.post(` http://${HOST_NAME}:3010/v1/api/tastie/admin/respond-to-requests-from-provider`, {
+                provider_id: provider.provider_id,
+                status: 1 // accept
+            });
+
+            if (res.data.status) {
+                console.log('Accept successfully');
+                await GetRequiredList(); // refresh the list
+            }
+        } catch (error) {
+            console.error('Cannot accept provider request', error);
+        }
     };
 
-    const HandleRefuseRequest = (providerList) => {
-        console.log('Refused', providerList);
+    const HandleRefuseRequest = async (provider) => {
+        console.log('Refused', provider);
+        try {
+            const res = await axios.post(` http://${HOST_NAME}:3010/v1/api/tastie/admin/respond-to-requests-from-provider`, {
+                provider_id: provider.provider_id,
+                status: 2 // refused
+            });
+
+            if (res.data.status) {
+                console.log('Refuse sucessfully');
+                await GetRequiredList(); // refresh the list
+            }
+        } catch (error) {
+            console.error('Cannot refuse provider request', error);
+        }
     };
 
     useEffect(() => {
-        GetAllProvider(1, 100000000);
+        GetRequiredList();
     }, []);
 
     useEffect(() => {
@@ -98,25 +118,25 @@ const ProviderRequest = () => {
     return (
         <MainCard
             title="Provider request"
-            secondary={
-                <>
-                    {showButtons && (
-                        <>
-                            <Button variant="contained" color="error" onClick={() => HandleRefuseRequest(selectedProvider)}>
-                                Refuse
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ marginLeft: 2 }}
-                                onClick={() => HandleAcceptRequest(selectedProvider)}
-                            >
-                                Accept
-                            </Button>
-                        </>
-                    )}
-                </>
-            }
+            // secondary={
+            //     <>
+            //         {showButtons && (
+            //             <>
+            //                 <Button variant="contained" color="error" onClick={() => HandleRefuseRequest(selectedProvider)}>
+            //                     Refuse
+            //                 </Button>
+            //                 <Button
+            //                     variant="contained"
+            //                     color="primary"
+            //                     sx={{ marginLeft: 2 }}
+            //                     onClick={() => HandleAcceptRequest(selectedProvider)}
+            //                 >
+            //                     Accept
+            //                 </Button>
+            //             </>
+            //         )}
+            //     </>
+            // }
         >
             {/* <DataGrid
                 rows={rows}
@@ -181,10 +201,23 @@ const ProviderRequest = () => {
                                 color="secondary"
                                 variant="outline"
                                 size="large"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    HandleRefuseRequest(provider);
+                                }}
                             >
                                 Refuse
                             </Button>
-                            <Button sx={{ width: '100%' }} color="secondary" variant="contained" size="large">
+                            <Button
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    HandleAcceptRequest(provider);
+                                }}
+                                sx={{ width: '100%' }}
+                                color="secondary"
+                                variant="contained"
+                                size="large"
+                            >
                                 Accept
                             </Button>
                         </CardActions>
@@ -232,10 +265,23 @@ const ProviderRequest = () => {
                                 color="secondary"
                                 variant="outline"
                                 size="large"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    HandleRefuseRequest(providerTarget);
+                                }}
                             >
                                 Refuse
                             </Button>
-                            <Button sx={{ width: '100%' }} color="secondary" variant="contained" size="large">
+                            <Button
+                                sx={{ width: '100%' }}
+                                color="secondary"
+                                variant="contained"
+                                size="large"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    HandleAcceptRequest(providerTarget);
+                                }}
+                            >
                                 Accept
                             </Button>
                         </CardActions>

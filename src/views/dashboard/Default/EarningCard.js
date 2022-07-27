@@ -114,16 +114,17 @@ const EarningCard = ({ isLoading }) => {
 
         if (timeValue === 'Month') {
             // GetTotalRevenue(currentMonth, currentMonth, currentYear);
-            const getPreviousMonth = GetTotalRevenue(currentMonth - 1, currentMonth - 1, currentYear);
-            const getCurrentMonth = GetTotalRevenue(currentMonth, currentMonth, currentYear);
+            const getPreviousMonth = GetTotalRevenue(currentMonth - 2, currentMonth - 1, currentYear);
+            const getCurrentMonth = GetTotalRevenue(currentMonth - 1, currentMonth, currentYear);
             Promise.all([getPreviousMonth, getCurrentMonth]).then((values) => {
                 setTotalRevenue(values[1].total_revenue);
                 setIsHigher(values[0] < values[1]);
             });
         } else {
-            const getPreviousMonth = GetTotalRevenue(1, 12, currentYear);
-            const getCurrentMonth = GetTotalRevenue(1, 12, currentYear - 1);
+            const getPreviousMonth = GetTotalRevenue(1, 12, currentYear - 1);
+            const getCurrentMonth = GetTotalRevenue(1, 12, currentYear);
             Promise.all([getPreviousMonth, getCurrentMonth]).then((values) => {
+                console.log(values);
                 setTotalRevenue(values[1].total_revenue);
                 setIsHigher(values[0] < values[1]);
             });
