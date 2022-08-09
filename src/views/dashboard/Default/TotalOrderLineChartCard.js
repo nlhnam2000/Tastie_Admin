@@ -111,8 +111,8 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
         const currentYear = new Date().getFullYear();
 
         if (timeValue === 'Month') {
-            const getPreviousMonth = GetTotalSale(currentMonth - 2, currentMonth - 1, currentYear);
-            const getCurrentMonth = GetTotalSale(currentMonth - 1, currentMonth, currentYear);
+            const getPreviousMonth = GetTotalSale(4, 4, currentYear);
+            const getCurrentMonth = GetTotalSale(5, 5, currentYear);
             Promise.all([getPreviousMonth, getCurrentMonth]).then((values) => {
                 setTotalSale(values[1].total_num_orders);
                 setIsHigher(values[0] < values[1]);

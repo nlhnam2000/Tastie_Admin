@@ -114,8 +114,8 @@ const EarningCard = ({ isLoading }) => {
 
         if (timeValue === 'Month') {
             // GetTotalRevenue(currentMonth, currentMonth, currentYear);
-            const getPreviousMonth = GetTotalRevenue(currentMonth - 2, currentMonth - 1, currentYear);
-            const getCurrentMonth = GetTotalRevenue(currentMonth - 1, currentMonth, currentYear);
+            const getPreviousMonth = GetTotalRevenue(4, 4, currentYear);
+            const getCurrentMonth = GetTotalRevenue(5, 5, currentYear);
             Promise.all([getPreviousMonth, getCurrentMonth]).then((values) => {
                 setTotalRevenue(values[1].total_revenue);
                 setIsHigher(values[0] < values[1]);
@@ -220,7 +220,7 @@ const EarningCard = ({ isLoading }) => {
                                 <Grid container alignItems="center">
                                     <Grid item>
                                         <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                            ${totalRevenue.toFixed(2) ?? 0.0}
+                                            ${totalRevenue ? totalRevenue.toFixed(2) : 0.0}
                                         </Typography>
                                     </Grid>
                                     <Grid item>

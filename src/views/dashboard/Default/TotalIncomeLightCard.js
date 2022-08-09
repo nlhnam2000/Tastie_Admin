@@ -139,7 +139,7 @@ const TotalIncomeLightCard = ({ isLoading }) => {
     useEffect(() => {
         const currentMonth = new Date().getMonth() + 1;
         const currentYear = new Date().getFullYear();
-        GetSalePerOrder(currentMonth - 1, currentMonth, currentYear);
+        GetSalePerOrder(5, 5, currentYear);
     }, []);
 
     return (
